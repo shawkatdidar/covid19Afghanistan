@@ -16,6 +16,7 @@ library(readr)
 library(readxl)
 library(lubridate)
 library(magrittr)
+library(filesstrings)
 rm(afgcovid19)
 setwd("F:/R Directory/Covid19_data")
 rm(covid_tolo)
@@ -53,7 +54,8 @@ yesterdaydata<- covidold
 afgcovid19<- rbind(yesterdaydata, afgcovidtolo)
 afgcovid19$province<- gsub(" ", "", afgcovid19$province)
 #Saving new dataset
-write.csv(afgcovid19, paste("covidtolo",Sys.Date()))
+write.csv(afgcovid19, paste0("F:/R Directory/Covid19_data/covidtolo"
+                             , Sys.Date(), ".csv"))
 rm(afgcovidtolo, covid_tolo, covidold, ff, merge, tolopastcovid, confirmed, deaths, date, date2, name, province, recovered)
 # calculate daily rates
 afgcovid19 <- afgcovid19 %>% 
@@ -89,8 +91,16 @@ rm(yesterdaydata,covidold)
 geoinfo<- read_xlsx("provinc_geoinfo.xlsx")
 afgcovid19<- afgcovid19 %>% 
   left_join(geoinfo, c("province" = "Province"))
-setwd("F:/R Directory")
 rm(geoinfo)
+#pushing data to github
+
+setwd("F:/R Directory/covid19Afghanistan")
+write.csv(afgcovid19, paste0("F:/R Directory/covid19Afghanistan/Update_data"
+                             , Sys.Date(), ".csv"))
+file.move(paste0("F:/R Directory/covid19Afghanistan/Update_data"
+                 , Sys.Date(), ".csv"), "F:/R Directory/covid19Afghanistan/Update_data" )
+setwd("F:/R Directory")
+
 #country mobility data of AFghanistan
 afgmobdata<- read.csv("afgmobility.csv", stringsAsFactors = FALSE)
 afgmobdata<- afgmobdata %>% 
